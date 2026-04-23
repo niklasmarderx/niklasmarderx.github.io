@@ -1,0 +1,348 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const projects = [
+  {
+    name: 'Ember',
+    description: 'Blazing-fast AI agent framework written in Rust. Simple, fast, and extensible.',
+    lang: 'Rust',
+    stars: 3,
+    url: 'https://github.com/niklasmarderx/Ember',
+    homepage: 'https://niklasmarderx.github.io/Ember/',
+    tags: ['ai', 'agent', 'rust'],
+  },
+  {
+    name: 'rune',
+    description:
+      'High-performance AI coding agent CLI built entirely in Rust, designed for speed, safety, and extensibility.',
+    lang: 'Rust',
+    stars: 2,
+    url: 'https://github.com/niklasmarderx/rune',
+    homepage: 'https://niklasmarderx.github.io/rune/',
+    tags: ['ai', 'cli', 'rust'],
+  },
+  {
+    name: 'hotswap',
+    description: 'Zero-downtime config & env reloader — watch files, validate, and signal processes.',
+    lang: 'Rust',
+    stars: 1,
+    url: 'https://github.com/niklasmarderx/hotswap',
+    tags: ['cli', 'devtools', 'rust'],
+  },
+  {
+    name: 'TypeCraft',
+    description:
+      'Typing trainer for programmers with Code Playground, Git/Vim/Regex training, gamification, and PWA support.',
+    lang: 'TypeScript',
+    stars: 1,
+    url: 'https://github.com/niklasmarderx/TypeCraft',
+    tags: ['typescript', 'pwa', 'learning'],
+  },
+];
+---
+
+<Layout>
+  <!-- Hero -->
+  <section class="hero container">
+    <p class="hero-greeting">Hi, I'm</p>
+    <h1 class="hero-name">Niklas Marder.</h1>
+    <p class="hero-subtitle">
+      Software Engineer at SAP · MSc Student at Uni Potsdam<br />
+      Building AI agents & developer tools in Rust and TypeScript.
+    </p>
+    <div class="hero-actions">
+      <a href="/#projects" class="btn btn-primary">View Projects</a>
+      <a
+        href="https://github.com/niklasmarderx"
+        target="_blank"
+        rel="noopener"
+        class="btn btn-secondary"
+      >
+        GitHub ↗
+      </a>
+      <a
+        href="https://www.linkedin.com/in/niklas-marder-75263a164/"
+        target="_blank"
+        rel="noopener"
+        class="btn btn-secondary"
+      >
+        LinkedIn ↗
+      </a>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="about container">
+    <p class="section-label">About</p>
+    <p class="about-text">
+      I'm a software engineer working at SAP and currently pursuing my Master's in Computer Science
+      at the University of Potsdam. I'm interested in building things at the intersection of AI and
+      developer tooling — from agent frameworks to CLI utilities. Most of my open-source work is in
+      Rust, though I reach for TypeScript when building for the web.
+    </p>
+    <p class="about-text">
+      My thesis investigates <em>Process Coherence as an evaluation criterion for Enterprise
+      Software Architectures</em> (ESA) — researching how distributed enterprise systems maintain
+      coherent processes across architectural boundaries.
+    </p>
+  </section>
+
+  <!-- Projects -->
+  <section class="projects container" id="projects">
+    <p class="section-label">Projects</p>
+    <div class="projects-grid">
+      {
+        projects.map((p) => (
+          <a href={p.url} target="_blank" rel="noopener" class="project-card">
+            <div class="project-header">
+              <span class="project-name">{p.name}</span>
+              <span class="project-stars">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+                {p.stars}
+              </span>
+            </div>
+            <p class="project-desc">{p.description}</p>
+            <div class="project-footer">
+              <span class="tag">{p.lang}</span>
+              {p.tags.slice(0, 2).map((t) => (
+                <span class="tag">{t}</span>
+              ))}
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Writing -->
+  {
+    posts.length > 0 && (
+      <section class="writing container">
+        <div class="writing-header">
+          <p class="section-label">Writing</p>
+          <a href="/blog" class="view-all">
+            All posts →
+          </a>
+        </div>
+        <div class="post-list">
+          {posts.map((post) => (
+            <a href={`/blog/${post.id}`} class="post-item">
+              <div class="post-meta">
+                <span class="post-date">
+                  {post.data.pubDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                  })}
+                </span>
+              </div>
+              <p class="post-title">{post.data.title}</p>
+              <p class="post-desc">{post.data.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )
+  }
+</Layout>
+
+<style>
+  /* Hero */
+  .hero {
+    padding: 5rem 1.5rem 3.5rem;
+  }
+
+  .hero-greeting {
+    font-size: 1.1rem;
+    color: var(--fg-muted);
+    margin-bottom: 0.25rem;
+  }
+
+  .hero-name {
+    font-size: clamp(2.5rem, 6vw, 3.75rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--fg);
+    margin-bottom: 1rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+    color: var(--fg-muted);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    max-width: 520px;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* About */
+  .about {
+    padding: 0 1.5rem 3.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .about-text {
+    color: var(--fg-muted);
+    max-width: 600px;
+    margin-bottom: 0.75rem;
+    font-size: 0.975rem;
+    line-height: 1.7;
+  }
+
+  /* Projects */
+  .projects {
+    padding: 3.5rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 540px) {
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .project-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--fg);
+    text-decoration: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .project-card:hover {
+    border-color: #d1d5db;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    color: var(--fg);
+  }
+
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .project-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .project-stars {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.8rem;
+    color: var(--fg-muted);
+  }
+
+  .project-stars svg {
+    color: #f59e0b;
+  }
+
+  .project-desc {
+    font-size: 0.875rem;
+    color: var(--fg-muted);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .project-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.25rem;
+  }
+
+  /* Writing */
+  .writing {
+    padding: 3.5rem 1.5rem;
+  }
+
+  .writing-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1.25rem;
+  }
+
+  .writing-header .section-label {
+    margin-bottom: 0;
+  }
+
+  .view-all {
+    font-size: 0.875rem;
+    color: var(--fg-muted);
+  }
+
+  .view-all:hover {
+    color: var(--fg);
+  }
+
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .post-item {
+    display: block;
+    padding: 1.1rem 0;
+    border-top: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--fg);
+    transition: opacity 0.15s;
+  }
+
+  .post-item:hover {
+    opacity: 0.75;
+  }
+
+  .post-meta {
+    margin-bottom: 0.2rem;
+  }
+
+  .post-date {
+    font-size: 0.8rem;
+    color: var(--fg-subtle);
+  }
+
+  .post-title {
+    font-size: 0.975rem;
+    font-weight: 500;
+    margin-bottom: 0.2rem;
+  }
+
+  .post-desc {
+    font-size: 0.875rem;
+    color: var(--fg-muted);
+  }
+</style>
